@@ -35,7 +35,7 @@ Webhook ingress is also supported — Forgejo and SigNoz events are received, fo
 ### Install
 
 ```bash
-git clone <your-repo-url> && cd agent-discord-harness
+git clone https://github.com/Ghifaryh/agent-discord-harness.git && cd agent-discord-harness
 cp .env.example .env
 # Fill in your tokens in .env
 npm install
@@ -67,18 +67,18 @@ docker compose up -d
 
 ### Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `DISCORD_TOKEN` | Discord bot token |
-| `OPENROUTER_API_KEY` | OpenRouter API key |
-| `OUTLINE_URL` | Outline instance URL |
-| `OUTLINE_API_KEY` | Outline API token |
-| `PLANE_URL` | Plane instance URL |
-| `PLANE_API_KEY` | Plane API token |
-| `FORGEJO_URL` | Forgejo instance URL |
-| `FORGEJO_API_KEY` | Forgejo API token |
-| `WEBHOOK_PORT` | Webhook server port (default: 3000) |
-| `WEBHOOK_SECRET` | Shared secret for webhook signature verification |
+| Variable             | Description                                      |
+| -------------------- | ------------------------------------------------ |
+| `DISCORD_TOKEN`      | Discord bot token                                |
+| `OPENROUTER_API_KEY` | OpenRouter API key                               |
+| `OUTLINE_URL`        | Outline instance URL                             |
+| `OUTLINE_API_KEY`    | Outline API token                                |
+| `PLANE_URL`          | Plane instance URL                               |
+| `PLANE_API_KEY`      | Plane API token                                  |
+| `FORGEJO_URL`        | Forgejo instance URL                             |
+| `FORGEJO_API_KEY`    | Forgejo API token                                |
+| `WEBHOOK_PORT`       | Webhook server port (default: 3000)              |
+| `WEBHOOK_SECRET`     | Shared secret for webhook signature verification |
 
 ### Channel Permissions
 
