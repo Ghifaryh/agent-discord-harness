@@ -1,0 +1,13 @@
+{
+  "channels": {
+    "_example_": {
+      "description": "Example channel configuration",
+      "allowedTools": ["outline-cli", "plane-cli", "forgejo-cli"],
+      "requireMention": true
+    }
+  },
+  "defaults": {
+    "allowedTools": [],
+    "requireMention": true
+  }
+}
