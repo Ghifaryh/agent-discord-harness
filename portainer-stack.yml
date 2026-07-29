@@ -19,7 +19,7 @@ services:
       - FORGEJO_URL=${FORGEJO_URL}
       - FORGEJO_API_KEY=${FORGEJO_API_KEY}
       - WEBHOOK_PORT=3100
-      - CHANNELS_CONFIG=${CHANNELS_CONFIG}
+      - CHANNELS_CONFIG={"channels":{"1530780235795271880":{"description":"Outline/Wiki","allowedTools":["outline-cli"],"requireMention":true},"1530780531938169023":{"description":"Plane/Design","allowedTools":["plane-cli"],"requireMention":true},"1530780586082439239":{"description":"Forgejo","allowedTools":["forgejo-cli"],"requireMention":true}},"defaults":{"allowedTools":[],"requireMention":true}}
     volumes:
       - ./config:/app/config:ro
     healthcheck:
