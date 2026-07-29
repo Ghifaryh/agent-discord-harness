@@ -17,6 +17,85 @@ export interface CLIIntent {
 
 export type Intent = ChatIntent | CLIIntent;
 
+interface KeywordMatch {
+  tool: string;
+  command: string;
+  subcommand: string;
+  extractTitle?: (msg: string) => string | null;
+}
+
+const KEYWORD_RULES: KeywordMatch[] = [
+  // Outline / Docs
+  { tool: "outline-cli", command: "doc", subcommand: "list", extractTitle: () => null },
+  { tool: "outline-cli", command: "doc", subcommand: "create", extractTitle: (msg) => extractAfter(msg, ["called", "titled", "named", "title"]) },
+  { tool: "outline-cli", command: "doc", subcommand: "get", extractTitle: (msg) => extractAfter(msg, ["called", "titled", "named"]) },
+  // Plane / Tasks
+  { tool: "plane-cli", command: "task", subcommand: "list", extractTitle: () => null },
+  { tool: "plane-cli", command: "task", subcommand: "create", extractTitle: (msg) => extractAfter(msg, ["called", "titled", "named", "title"]) },
+  { tool: "plane-cli", command: "task", subcommand: "close", extractTitle: (msg) => extractAfter(msg, ["called", "titled", "named"]) },
+  // Forgejo / Repos
+  { tool: "forgejo-cli", command: "repo", subcommand: "list", extractTitle: () => null },
+  { tool: "forgejo-cli", command: "pr", subcommand: "list", extractTitle: () => null },
+  { tool: "forgejo-cli", command: "issue", subcommand: "create", extractTitle: (msg) => extractAfter(msg, ["called", "titled", "named", "title"]) },
+];
+
+function extractAfter(msg: string, markers: string[]): string | null {
+  const lower = msg.toLowerCase();
+  for (const marker of markers) {
+    const idx = lower.indexOf(marker);
+    if (idx !== -1) {
+      const after = msg.slice(idx + marker.length).trim().replace(/^["':]+|["':]+$/g, "");
+      if (after.length > 0) return after;
+    }
+  }
+  return null;
+}
+
+function keywordFallback(userMessage: string, channelAllowedTools: string[]): Intent | null {
+  const lower = userMessage.toLowerCase();
+
+  for (const rule of KEYWORD_RULES) {
+    if (channelAllowedTools.length > 0 && !channelAllowedTools.includes(rule.tool)) continue;
+
+    const toolKeywords: Record<string, string[]> = {
+      "outline-cli": ["doc", "docs", "document", "documents", "wiki", "note", "notes", "write"],
+      "plane-cli": ["task", "tasks", "ticket", "issue"],
+      "forgejo-cli": ["repo", "repos", "repository", "repositories", "pr", "pull request", "merge"],
+    };
+
+    const keywords = toolKeywords[rule.tool] ?? [];
+    const hasKeyword = keywords.some((k) => lower.includes(k));
+    if (!hasKeyword) continue;
+
+    const actionKeywords: Record<string, string[]> = {
+      "list": ["list", "show", "get", "display", "view", "see", "fetch"],
+      "create": ["create", "make", "add", "new", "write", "draft"],
+      "close": ["close", "done", "complete", "finish"],
+    };
+
+    const actions = actionKeywords[rule.subcommand] ?? [];
+    const hasAction = actions.some((a) => lower.includes(a));
+    if (!hasAction) continue;
+
+    const title = rule.extractTitle?.(userMessage);
+
+    if (rule.subcommand === "list") {
+      return { type: "cli", tool: rule.tool, command: rule.command, args: ["list"], rawArgs: "" };
+    }
+    if (rule.subcommand === "create") {
+      const args = ["create"];
+      if (title) args.push("--title", title, "--body", "");
+      else args.push("--title", "New " + rule.command, "--body", "");
+      return { type: "cli", tool: rule.tool, command: rule.command, args, rawArgs: "" };
+    }
+    if (rule.subcommand === "close" && title) {
+      return { type: "cli", tool: rule.tool, command: rule.command, args: ["close"], rawArgs: "" };
+    }
+  }
+
+  return null;
+}
+
 const ROUTER_SYSTEM_PROMPT = `You are an intent router for a Discord bot that manages developer tools. You are ACTION-ORIENTED — prefer routing to CLI tools over chatting.
 
 === CLI TOOL REFERENCE (exact syntax) ===
@@ -167,8 +246,37 @@ export async function classifyIntent(
       return { type: "chat", response: parsed.response };
     }
 
+    // If LLM returned chat, check if keyword fallback can route to CLI instead
+    const keywordResult = keywordFallback(userMessage, channelAllowedTools);
+    if (keywordResult) {
+      if (keywordResult.type === "cli" && channelAllowedTools.length > 0 && !channelAllowedTools.includes(keywordResult.tool)) {
+        const targetChannel = Object.values(channelContext.allChannels).find(
+          (ch) => ch.allowedTools.includes(keywordResult.tool)
+        );
+        const redirect = targetChannel
+          ? `That requires \`${keywordResult.tool}\` — head over to **${targetChannel.description ?? "the appropriate channel"}** and ask there.`
+          : `The tool \`${keywordResult.tool}\` is not available in this channel.`;
+        return { type: "chat", response: redirect };
+      }
+      return keywordResult;
+    }
+
     return { type: "chat", response: parsed.response ?? response.content };
   } catch {
+    // LLM returned unparseable output, try keyword fallback
+    const keywordResult = keywordFallback(userMessage, channelAllowedTools);
+    if (keywordResult) {
+      if (keywordResult.type === "cli" && channelAllowedTools.length > 0 && !channelAllowedTools.includes(keywordResult.tool)) {
+        const targetChannel = Object.values(channelContext.allChannels).find(
+          (ch) => ch.allowedTools.includes(keywordResult.tool)
+        );
+        const redirect = targetChannel
+          ? `That requires \`${keywordResult.tool}\` — head over to **${targetChannel.description ?? "the appropriate channel"}** and ask there.`
+          : `The tool \`${keywordResult.tool}\` is not available in this channel.`;
+        return { type: "chat", response: redirect };
+      }
+      return keywordResult;
+    }
     return { type: "chat", response: response.content };
   }
 }
