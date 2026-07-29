@@ -1,8 +1,18 @@
 {
   "channels": {
-    "_example_": {
-      "description": "Example channel configuration",
-      "allowedTools": ["outline-cli", "plane-cli", "forgejo-cli"],
+    "1530780235795271880": {
+      "description": "Outline/Wiki",
+      "allowedTools": ["outline-cli"],
+      "requireMention": true
+    },
+    "1530780531938169023": {
+      "description": "Plane/Design",
+      "allowedTools": ["plane-cli"],
+      "requireMention": true
+    },
+    "1530780586082439239": {
+      "description": "Forgejo",
+      "allowedTools": ["forgejo-cli"],
       "requireMention": true
     }
   },

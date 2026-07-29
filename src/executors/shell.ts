@@ -32,7 +32,7 @@ export async function execCLI(
     };
   }
 
-  const binaryPath = `./bin/${tool}`;
+  const binaryPath = `./bin/${tool}/${tool}`;
   const sanitized = sanitizeArgs(args);
   const fullCommand = `${binaryPath} ${sanitized.join(" ")}`;
 
