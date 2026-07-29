@@ -3,9 +3,9 @@ node_modules/
 vendor/
 
 # Compiled CLI binaries (source lives in bin/*/)
-/bin/outline-cli
-/bin/plane-cli
-/bin/forgejo-cli
+/bin/outline-cli/outline-cli
+/bin/plane-cli/plane-cli
+/bin/forgejo-cli/forgejo-cli
 
 # Environment variables
 .env
