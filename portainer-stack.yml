@@ -18,7 +18,7 @@ services:
       - PLANE_PROJECT=${PLANE_PROJECT}
       - FORGEJO_URL=${FORGEJO_URL}
       - FORGEJO_API_KEY=${FORGEJO_API_KEY}
-      - WEBHOOK_PORT=${WEBHOOK_PORT}
+      - WEBHOOK_PORT=3100
     volumes:
       - ./config:/app/config:ro
     healthcheck:
