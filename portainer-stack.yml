@@ -5,6 +5,20 @@ services:
     restart: unless-stopped
     ports:
       - "3100:3100"
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - AI_PROVIDER_BASE_URL=${AI_PROVIDER_BASE_URL}
+      - AI_PROVIDER_API_KEY=${AI_PROVIDER_API_KEY}
+      - DEFAULT_MODEL=${DEFAULT_MODEL}
+      - OUTLINE_URL=${OUTLINE_URL}
+      - OUTLINE_API_KEY=${OUTLINE_API_KEY}
+      - PLANE_URL=${PLANE_URL}
+      - PLANE_API_KEY=${PLANE_API_KEY}
+      - PLANE_WORKSPACE=${PLANE_WORKSPACE}
+      - PLANE_PROJECT=${PLANE_PROJECT}
+      - FORGEJO_URL=${FORGEJO_URL}
+      - FORGEJO_API_KEY=${FORGEJO_API_KEY}
+      - WEBHOOK_PORT=${WEBHOOK_PORT}
     volumes:
       - ./config:/app/config:ro
     healthcheck:
