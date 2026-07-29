@@ -3,6 +3,9 @@ import OpenAI from "openai";
 const client = new OpenAI({
   baseURL: process.env.AI_PROVIDER_BASE_URL,
   apiKey: process.env.AI_PROVIDER_API_KEY,
+  defaultHeaders: {
+    "User-Agent": "agent-discord-harness/0.1",
+  },
 });
 
 const MODEL = process.env.DEFAULT_MODEL || "combo/test-hemat-ga-ya";
