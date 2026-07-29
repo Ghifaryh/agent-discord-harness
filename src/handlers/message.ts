@@ -30,6 +30,16 @@ let channelConfig: ChannelConfig = {
 };
 
 function loadChannelConfig(): void {
+  const envConfig = process.env.CHANNELS_CONFIG;
+  if (envConfig) {
+    try {
+      channelConfig = JSON.parse(envConfig) as ChannelConfig;
+      return;
+    } catch {
+      console.warn("Failed to parse CHANNELS_CONFIG env var, trying file...");
+    }
+  }
+
   try {
     const raw = readFileSync(
       resolve(process.cwd(), "config/channels.json"),
@@ -37,7 +47,7 @@ function loadChannelConfig(): void {
     );
     channelConfig = JSON.parse(raw) as ChannelConfig;
   } catch {
-    console.warn("Failed to load config/channels.json, using defaults");
+    console.warn("No CHANNELS_CONFIG env var and config/channels.json not found, using defaults");
   }
 }
 
