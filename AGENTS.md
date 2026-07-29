@@ -7,7 +7,7 @@ This repository contains the **Discord Agent Harness**—the central orchestrato
 ## 1. System Philosophy
 
 1. **Harness First:** This service routes messages from Discord channels, formats responses, and dispatches commands to local CLI tools.
-2. **CLI Over Raw HTTP:** Do not embed heavy third-party REST API logic in this codebase. Instead, call external system binaries located in `./bin/` (e.g., `./bin/plane-cli`, `./bin/outline-cli`).
+2. **CLI Over Raw HTTP:** Do not embed heavy third-party REST API logic in this codebase. Instead, call external system binaries located in `./bin/` (e.g., `./bin/plane-cli`, `./bin/outline-cli`). CLI wrappers live in separate repos: [outline-cli](https://github.com/Ghifaryh/outline-cli), [plane-cli](https://github.com/Ghifaryh/plane-cli), [forgejo-cli](https://github.com/Ghifaryh/forgejo-cli).
 3. **Low Overhead:** Prioritize lightweight, non-blocking execution. LLM routing is handled by 9Router Gateway — model selection happens at the provider level.
 
 ---
@@ -17,20 +17,20 @@ This repository contains the **Discord Agent Harness**—the central orchestrato
 * `src/agent/`: Core LLM integration and intent detection logic.
 * `src/executors/`: Subprocess wrappers for running local terminal commands.
 * `src/handlers/`: Webhook receivers and Discord event listeners.
-* `bin/`: **[Git Ignored]** Folder containing local executable binaries built from independent CLI wrapper repositories.
+* `bin/`: **[Git Ignored]** Folder containing local executable binaries built from independent CLI wrapper repositories during Docker build.
 
-so like this:
+```
 agent-discord-harness/
 ├── .gitignore                  # Ignores /bin/*
 ├── AGENTS.md                   # System Prompt & Context for AI Agents
 ├── docker-compose.yml          # Container stack orchestration
-├── Dockerfile                  # Builds Discord bot + pulls/compiles CLI binaries
-├── package.json / go.mod
-├── bin/                        # [GITIGNORED] Contains binary tools
+├── Dockerfile                  # Builds Discord bot + pulls/compiles CLI binaries from separate repos
+├── package.json
+├── bin/                        # [GITIGNORED] Built during Docker build
 │   ├── .gitkeep
-│   ├── outline-cli
-│   ├── plane-cli
-│   └── forgejo-cli
+│   ├── outline-cli             # Built from github.com/Ghifaryh/outline-cli
+│   ├── plane-cli               # Built from github.com/Ghifaryh/plane-cli
+│   └── forgejo-cli             # Built from github.com/Ghifaryh/forgejo-cli
 ├── config/
 │   └── channels.json           # Maps Discord Channel IDs to CLI tool permissions
 └── src/
@@ -43,6 +43,7 @@ agent-discord-harness/
     └── handlers/
         ├── message.ts          # Handles chat/mentions in Discord
         └── webhook.ts          # Handles incoming webhooks from Forgejo/SigNoz
+```
 
 ---
 
@@ -67,3 +68,4 @@ When handling incoming intents or writing handlers that trigger CLI tools:
 # Forgejo (Git/Code Repos)
 ./bin/forgejo-cli repo list
 ./bin/forgejo-cli pr create --repo "my-app" --branch "feat/login"
+```

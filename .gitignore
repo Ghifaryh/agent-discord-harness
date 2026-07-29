@@ -2,10 +2,9 @@
 node_modules/
 vendor/
 
-# Compiled CLI binaries (source lives in bin/*/)
-/bin/outline-cli/outline-cli
-/bin/plane-cli/plane-cli
-/bin/forgejo-cli/forgejo-cli
+# CLI binaries (built from separate repos during Docker build)
+/bin/*
+!/bin/.gitkeep
 
 # Environment variables
 .env

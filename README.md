@@ -28,7 +28,6 @@ Webhook ingress is also supported — Forgejo and SigNoz events are received, fo
 ### Prerequisites
 
 - Node.js 22+
-- Go 1.23+ (for CLI binaries)
 - A Discord bot token
 - A 9Router Gateway API key
 
@@ -39,15 +38,6 @@ git clone https://github.com/Ghifaryh/agent-discord-harness.git && cd agent-disc
 cp .env.example .env
 # Fill in your tokens in .env
 npm install
-```
-
-### Build CLI binaries
-
-```bash
-cd bin/outline-cli && go build -o ../outline-cli . && cd ../..
-cd bin/plane-cli && go build -o ../plane-cli . && cd ../..
-cd bin/forgejo-cli && go build -o ../forgejo-cli . && cd ../..
-chmod +x bin/outline-cli bin/plane-cli bin/forgejo-cli
 ```
 
 ### Run
@@ -62,6 +52,8 @@ npm run build && npm start    # production
 ```bash
 docker compose up -d
 ```
+
+> **Note:** The Dockerfile automatically clones and builds the CLI binaries from their separate repos ([outline-cli](https://github.com/Ghifaryh/outline-cli), [plane-cli](https://github.com/Ghifaryh/plane-cli), [forgejo-cli](https://github.com/Ghifaryh/forgejo-cli)) during the image build.
 
 ## Configuration
 
@@ -104,34 +96,13 @@ Edit `config/channels.json` to control which CLI tools are available in each Dis
 
 ## CLI Tools
 
-Each tool outputs JSON to stdout for easy parsing by the harness.
+Each tool lives in its own repo and outputs JSON to stdout for easy parsing by the harness.
 
-### outline-cli (Docs/Wiki)
-
-```bash
-./bin/outline-cli doc create --title "Spec" --body "Markdown..."
-./bin/outline-cli doc list
-./bin/outline-cli doc get --id "doc_xxx"
-./bin/outline-cli doc update --id "doc_xxx" --body "Updated content"
-```
-
-### plane-cli (Project Tasks)
-
-```bash
-./bin/plane-cli task create --title "Bug fix" --priority high
-./bin/plane-cli task list --state todo
-./bin/plane-cli task update --id "xxx" --state in_progress
-./bin/plane-cli task close --id "xxx"
-```
-
-### forgejo-cli (Git/Repos)
-
-```bash
-./bin/forgejo-cli repo list
-./bin/forgejo-cli pr create --repo "owner/name" --branch "feat/x" --title "Add feature"
-./bin/forgejo-cli pr list --repo "owner/name" --state open
-./bin/forgejo-cli issue create --repo "owner/name" --title "Bug report" --labels "bug"
-```
+| Tool | Repo | Description |
+|------|------|-------------|
+| [outline-cli](https://github.com/Ghifaryh/outline-cli) | Docs/Wiki | Outline API wrapper |
+| [plane-cli](https://github.com/Ghifaryh/plane-cli) | Project Tasks | Plane API wrapper |
+| [forgejo-cli](https://github.com/Ghifaryh/forgejo-cli) | Git/Repos | Forgejo/Gitea API wrapper |
 
 ## Webhooks
 
@@ -156,10 +127,11 @@ Set `WEBHOOK_SECRET` in your env and configure the corresponding webhook URL in 
 │   └── handlers/
 │       ├── message.ts        # Discord message handling
 │       └── webhook.ts        # Forgejo/SigNoz webhooks
-├── bin/
-│   ├── outline-cli/          # Go: Outline API wrapper
-│   ├── plane-cli/            # Go: Plane API wrapper
-│   └── forgejo-cli/          # Go: Forgejo API wrapper
+├── bin/                      # [GITIGNORED] Built during Docker build
+│   ├── .gitkeep
+│   ├── outline-cli           # From github.com/Ghifaryh/outline-cli
+│   ├── plane-cli             # From github.com/Ghifaryh/plane-cli
+│   └── forgejo-cli           # From github.com/Ghifaryh/forgejo-cli
 ├── config/
 │   └── channels.json         # Channel → tool permissions
 ├── Dockerfile

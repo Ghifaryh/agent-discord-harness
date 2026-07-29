@@ -3,18 +3,18 @@ FROM golang:1.23-alpine AS go-builder
 RUN apk add --no-cache git
 
 # Build outline-cli
+RUN git clone https://github.com/Ghifaryh/outline-cli.git /build/outline-cli
 WORKDIR /build/outline-cli
-COPY bin/outline-cli/ .
 RUN go build -o /build/outline-cli/outline-cli .
 
 # Build plane-cli
+RUN git clone https://github.com/Ghifaryh/plane-cli.git /build/plane-cli
 WORKDIR /build/plane-cli
-COPY bin/plane-cli/ .
 RUN go build -o /build/plane-cli/plane-cli .
 
 # Build forgejo-cli
+RUN git clone https://github.com/Ghifaryh/forgejo-cli.git /build/forgejo-cli
 WORKDIR /build/forgejo-cli
-COPY bin/forgejo-cli/ .
 RUN go build -o /build/forgejo-cli/forgejo-cli .
 
 # ──────────────────────────────────────────────
