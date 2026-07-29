@@ -43,7 +43,8 @@ npm install
 ### Run
 
 ```bash
-npm run dev    # development with hot-reload
+npm run build:clis    # build CLI binaries from separate repos (requires Go + SSH)
+npm run dev           # development with hot-reload
 npm run build && npm start    # production
 ```
 
@@ -53,7 +54,7 @@ npm run build && npm start    # production
 docker compose up -d
 ```
 
-> **Note:** The Dockerfile automatically clones and builds the CLI binaries from their separate repos ([outline-cli](https://github.com/Ghifaryh/outline-cli), [plane-cli](https://github.com/Ghifaryh/plane-cli), [forgejo-cli](https://github.com/Ghifaryh/forgejo-cli)) during the image build.
+> **Note:** The Dockerfile automatically clones and builds the CLI binaries from their separate repos ([outline-cli](https://github.com/Ghifaryh/outline-cli), [plane-cli](https://github.com/Ghifaryh/plane-cli), [forgejo-cli](https://github.com/Ghifaryh/forgejo-cli)) during the image build. For local development, use `npm run build:clis`.
 
 ## Configuration
 
