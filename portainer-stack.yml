@@ -5,11 +5,11 @@ services:
     restart: unless-stopped
     env_file: .env
     ports:
-      - "${WEBHOOK_PORT:-3100}:${WEBHOOK_PORT:-3100}"
+      - "3100:3100"
     volumes:
       - ./config:/app/config:ro
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:${WEBHOOK_PORT:-3100}/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:3100/health"]
       interval: 30s
       timeout: 5s
       retries: 3
