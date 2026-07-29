@@ -65,11 +65,13 @@ docker compose up -d
 | `DISCORD_TOKEN`      | Discord bot token                                |
 | `AI_PROVIDER_BASE_URL` | 9Router Gateway base URL                      |
 | `AI_PROVIDER_API_KEY` | 9Router Gateway API key                       |
-| `DEFAULT_MODEL`       | Model to use (default: combo/test-hemat-ga-ya)   |
+| `DEFAULT_MODEL`       | Model to use (default: test-hemat-ga-ya)         |
 | `OUTLINE_URL`        | Outline instance URL                             |
 | `OUTLINE_API_KEY`    | Outline API token                                |
 | `PLANE_URL`          | Plane instance URL                               |
 | `PLANE_API_KEY`      | Plane API token                                  |
+| `PLANE_WORKSPACE`    | Plane workspace slug                             |
+| `PLANE_PROJECT`      | Plane project ID                                 |
 | `FORGEJO_URL`        | Forgejo instance URL                             |
 | `FORGEJO_API_KEY`    | Forgejo API token                                |
 | `WEBHOOK_PORT`       | Webhook server port (default: 3000)              |
