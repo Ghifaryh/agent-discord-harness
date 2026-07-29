@@ -61,6 +61,7 @@ Respond with ONLY a JSON object, no markdown fences:
   - "command" = the CLI command group (doc, task, repo, pr, issue)
   - "args" = the subcommand + all flags (e.g. ["list"], ["create", "--title", "My Task"])
 - Extract flag values from natural language (e.g. "called test" → "--title", "test")
+- ALWAYS include --body "" (or --description "") when creating docs/tasks/issues and user did not provide content
 - Be conservative: if unsure, default to "chat"`;
 
 interface ChannelInfo {
