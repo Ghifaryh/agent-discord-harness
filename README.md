@@ -11,10 +11,10 @@ Discord Message/DM
        ↓
    [Discord Bot]  ← src/index.ts
        ↓
-   Intent Router (OpenRouter LLM)
+   Intent Router (9Router LLM)
        ↓
   ┌────────────────┐
-  │ Chat Response   │  free model for simple queries
+  │ Chat Response   │  conversational responses
   │ CLI Execution   │  shells out to bin/<tool>
   └────────────────┘
        ↓
@@ -30,7 +30,7 @@ Webhook ingress is also supported — Forgejo and SigNoz events are received, fo
 - Node.js 22+
 - Go 1.23+ (for CLI binaries)
 - A Discord bot token
-- An OpenRouter API key
+- A 9Router Gateway API key
 
 ### Install
 
@@ -70,7 +70,9 @@ docker compose up -d
 | Variable             | Description                                      |
 | -------------------- | ------------------------------------------------ |
 | `DISCORD_TOKEN`      | Discord bot token                                |
-| `OPENROUTER_API_KEY` | OpenRouter API key                               |
+| `AI_PROVIDER_BASE_URL` | 9Router Gateway base URL                      |
+| `AI_PROVIDER_API_KEY` | 9Router Gateway API key                       |
+| `DEFAULT_MODEL`       | Model to use (default: combo/test-hemat-ga-ya)   |
 | `OUTLINE_URL`        | Outline instance URL                             |
 | `OUTLINE_API_KEY`    | Outline API token                                |
 | `PLANE_URL`          | Plane instance URL                               |
@@ -147,7 +149,7 @@ Set `WEBHOOK_SECRET` in your env and configure the corresponding webhook URL in 
 ├── src/
 │   ├── index.ts              # Entrypoint
 │   ├── agent/
-│   │   ├── llm.ts            # OpenRouter client (free-first)
+│   │   ├── llm.ts            # 9Router LLM client
 │   │   └── router.ts         # Intent classification
 │   ├── executors/
 │   │   └── shell.ts          # CLI subprocess runner

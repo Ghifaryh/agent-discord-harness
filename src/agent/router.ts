@@ -1,4 +1,4 @@
-import { queryFree, queryPaid } from "./llm.js";
+import { queryLLM } from "./llm.js";
 
 export type IntentType = "chat" | "cli";
 
@@ -41,13 +41,6 @@ Rules:
 - For CLI intents, extract the tool name, subcommand, and arguments from the natural language
 - Be conservative: if unsure, default to "chat"`;
 
-const COMPLEXITY_CHECK_PROMPT = `Classify the complexity of this user message on a scale of 1-3:
-1 = Simple (greetings, yes/no, basic status checks)
-2 = Moderate (multi-step requests, moderate reasoning needed)
-3 = Complex (requires deep reasoning, multi-step planning, nuanced responses)
-
-Respond with ONLY the number.`;
-
 export async function classifyIntent(
   userMessage: string,
   channelAllowedTools: string[]
@@ -57,7 +50,7 @@ export async function classifyIntent(
       ? `\nChannel allowed tools: ${channelAllowedTools.join(", ")}`
       : "\nNo CLI tools are allowed in this channel.";
 
-  const response = await queryFree(
+  const response = await queryLLM(
     ROUTER_SYSTEM_PROMPT + toolContext,
     userMessage
   );
@@ -109,14 +102,6 @@ export async function generateChatResponse(
     ? `You are a helpful Discord bot assistant for a developer automation pipeline. Context: ${context}`
     : "You are a helpful Discord bot assistant for a developer automation pipeline. Be concise and helpful. Use Discord markdown formatting when appropriate.";
 
-  const complexityRes = await queryFree(COMPLEXITY_CHECK_PROMPT, userMessage);
-  const complexity = parseInt(complexityRes.content.trim(), 10);
-
-  if (complexity >= 2) {
-    const res = await queryPaid(systemPrompt, userMessage);
-    return res.content;
-  }
-
-  const res = await queryFree(systemPrompt, userMessage);
+  const res = await queryLLM(systemPrompt, userMessage);
   return res.content;
 }

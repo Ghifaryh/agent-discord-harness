@@ -8,7 +8,7 @@ This repository contains the **Discord Agent Harness**—the central orchestrato
 
 1. **Harness First:** This service routes messages from Discord channels, formats responses, and dispatches commands to local CLI tools.
 2. **CLI Over Raw HTTP:** Do not embed heavy third-party REST API logic in this codebase. Instead, call external system binaries located in `./bin/` (e.g., `./bin/plane-cli`, `./bin/outline-cli`).
-3. **Low Overhead:** Prioritize lightweight, non-blocking execution. Default routine tasks to free OpenRouter models (`openrouter/free`).
+3. **Low Overhead:** Prioritize lightweight, non-blocking execution. LLM routing is handled by 9Router Gateway — model selection happens at the provider level.
 
 ---
 
@@ -36,7 +36,7 @@ agent-discord-harness/
 └── src/
     ├── index.ts                # Entrypoint for Discord Client
     ├── agent/
-    │   ├── llm.ts              # OpenRouter API client (handles free/paid models)
+    │   ├── llm.ts              # 9Router LLM API client
     │   └── router.ts           # Decides: Execute CLI or generate chat response?
     ├── executors/
     │   └── shell.ts            # Safe subprocess execution handler (`bin/<cli>`)
