@@ -3,7 +3,6 @@ services:
     image: ghcr.io/ghifaryh/agent-discord-harness:latest
     container_name: agent-discord-harness
     restart: unless-stopped
-    env_file: .env
     ports:
       - "3100:3100"
     volumes:
