@@ -47,6 +47,14 @@ function getChannelAllowedTools(channelId: string): string[] {
   return channelConfig.defaults.allowedTools;
 }
 
+function getAllChannels(): Record<string, { id: string; description?: string; allowedTools: string[] }> {
+  const result: Record<string, { id: string; description?: string; allowedTools: string[] }> = {};
+  for (const [id, ch] of Object.entries(channelConfig.channels)) {
+    result[id] = { id, description: ch.description, allowedTools: ch.allowedTools };
+  }
+  return result;
+}
+
 export function initMessageHandler(client: Client): void {
   loadChannelConfig();
 
@@ -72,10 +80,15 @@ export function initMessageHandler(client: Client): void {
       const channelId = message.channel.id;
       const allowedTools = getChannelAllowedTools(channelId);
 
-      const intent = await classifyIntent(userMessage, allowedTools);
+      const intent = await classifyIntent(userMessage, allowedTools, {
+        id: channelId,
+        name: "name" in message.channel ? (message.channel.name ?? undefined) : undefined,
+        description: channelConfig.channels[channelId]?.description,
+        allChannels: getAllChannels(),
+      });
 
       if (intent.type === "cli") {
-        const result = await execCLI(intent.tool, intent.args);
+        const result = await execCLI(intent.tool, [intent.command, ...intent.args]);
         const output = formatCLIOutput(result);
 
         const embed = new EmbedBuilder()
