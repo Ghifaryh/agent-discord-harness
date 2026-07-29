@@ -8,7 +8,7 @@ const client = new OpenAI({
   },
 });
 
-const MODEL = process.env.DEFAULT_MODEL || "combo/test-hemat-ga-ya";
+const MODEL = process.env.DEFAULT_MODEL || "test-hemat-ga-ya";
 
 export interface LLMResponse {
   content: string;

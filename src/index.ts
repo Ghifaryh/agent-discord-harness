@@ -3,6 +3,14 @@ import { Client, GatewayIntentBits, Events } from "discord.js";
 import { initMessageHandler } from "./handlers/message.js";
 import { startWebhookServer } from "./handlers/webhook.js";
 
+const required = ["DISCORD_TOKEN", "AI_PROVIDER_BASE_URL", "AI_PROVIDER_API_KEY"];
+for (const key of required) {
+  if (!process.env[key]) {
+    console.error(`Missing required env var: ${key}`);
+    process.exit(1);
+  }
+}
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
