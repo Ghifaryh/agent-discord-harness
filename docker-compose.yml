@@ -1,6 +1,6 @@
 services:
   bot:
-    build: .
+    image: ghcr.io/ghifaryh/agent-discord-harness:latest
     container_name: agent-discord-harness
     restart: unless-stopped
     env_file: .env
@@ -8,7 +8,6 @@ services:
       - "${WEBHOOK_PORT:-3000}:${WEBHOOK_PORT:-3000}"
     volumes:
       - ./config:/app/config:ro
-      - ./bin:/app/bin:ro
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:${WEBHOOK_PORT:-3000}/health"]
       interval: 30s
